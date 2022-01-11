@@ -1,33 +1,23 @@
+---
+title: "EdlibR: R interface to edlib"
+output: 
+  rmarkdown::html_vignette:
+vignette: >
+  %\VignetteIndexEntry{"EdlibR: R interface to edlib"}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
 
-# EdlibR: R interface to edlib"
 
--[align()][#align]
-  *[align function arguments][#align-function-arguments]
--[getNiceAlignment()][#getnicealignment]
-  *[getNiceAlignment() function arguments][#getnicealignment-function-arguments]
--[nice_print()][#nice_print]
+ This R package `edlibR` provides bindings to the C/C++ library edlib, which computes the exact pairwise sequence alignment using the [edit distance](https://en.wikipedia.org/wiki/Edit_distance) ([Levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance)). The functions within `edlibR` are modeled after the API of the [Python package edlib on PyPI](https://pypi.org/project/edlib/)
 
-Edlib is a C/C++ library to compute the exact pairwise sequence alignment using the [edit distance](https://en.wikipedia.org/wiki/Edit_distance) ([Levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance)). This R package `edlibR` is modeled after the API of the [Python package edlib on PyPI](https://pypi.org/project/edlib/). 
+There are three functions within `edlibR`:
 
-There are three functions within edlibR:
-
-**align()**
-
-```
-align(query, target, [mode], [task], [k], [cigarFormat], [additionalEqualities])
-```
-
-**getNiceAlignment()**
-
-```
-getNiceAlignment(alignResult, query, target, [gapSymbol])
-```
-
-**nice_print()**
-
-```
-nice_print(niceAlignment)
-```
+- [align()](#align)
+  * [align(): arguments](#align-arguments)
+- [getNiceAlignment()](#getnicealignment)
+  * [getNiceAlignment(): arguments](#getnicealignment-arguments)
+- [nice_print()](#nice_print)
 
 # align()
 
@@ -158,7 +148,7 @@ print(algn4)
 ```
 
 
-## align() function arguments 
+## align(): arguments 
 
 * **query:** This string is the query in the pairwise alignment
 * **target:** This string is the target in the pairwise alignment
@@ -212,7 +202,7 @@ print(nice_algn)
 ## [1] "telephone"
 ```
 
-## getNiceAlignment() function arguments 
+## getNiceAlignment(): arguments 
 
 * **alignResult:** The output of the method `align()`. As mentioned above, `align()` must use the arguments `task="path"` and `cigarFormat="extended"` in order for the CIGAR to be informative enough for `getNiceAlignment()` to work properly.
 * **query:** The exact query used for `alignResult`

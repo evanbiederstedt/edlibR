@@ -30,7 +30,7 @@ The original Python bindings to the C/C++ library using Cython can be found [her
 ## Usage
 
 For details and examples of the edlibR functionality, see the **vignettes:**
-* [HTML version](https://htmlpreview.github.io/?https://raw.githubusercontent.com/evanbiederstedt/edlibR/main/doc/edlibR_walkthrough.html)
+* [HTML version](https://htmlpreview.github.io/?https://raw.githubusercontent.com/evanbiederstedt/edlibR/blob/main/doc/edlibr_walkthrough.html)
 * [Markdown version](https://github.com/evanbiederstedt/edlibR/blob/main/vignettes/edlibR_walkthrough.md)
 
 There are three functions within edlibR:
