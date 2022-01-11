@@ -1,12 +1,5 @@
- ---
-title: "EdlibR: R interface to edlib"
-output: 
-  rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{EdlibR}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
----
+
+# EdlibR: R interface to edlib"
 
 -[align()][#align]
   *[align function arguments][#align-function-arguments]
@@ -54,28 +47,114 @@ A list is returned with the following fields:
 
 ### Examples:
 
-```{r}
+
+```r
 library(edlibR)
 
 algn1 = align("ACTG", "CACTRT", mode="HW", task="path")
 print(algn1)
 ```
 
-```{r}
+```
+## $editDistance
+## [1] 1
+## 
+## $alphabetLength
+## [1] 5
+## 
+## $locations
+## $locations[[1]]
+## [1] 1 3
+## 
+## $locations[[2]]
+## [1] 1 4
+## 
+## 
+## $cigar
+## [1] "3=1I"
+## 
+## $cigarFormat
+## [1] "extended"
+```
+
+
+```r
 algn2 = align("elephant", "telephone")
 print(algn2)
 ```
 
-```{r}
+```
+## $editDistance
+## [1] 3
+## 
+## $alphabetLength
+## [1] 8
+## 
+## $locations
+## $locations[[1]]
+## [1] NA  8
+## 
+## 
+## $cigar
+## NULL
+## 
+## $cigarFormat
+## [1] "extended"
+```
+
+
+```r
 algn3 = align("ACTG", "CACTRT", mode="HW", task="path")
 print(algn3)
 ```
 
+```
+## $editDistance
+## [1] 1
+## 
+## $alphabetLength
+## [1] 5
+## 
+## $locations
+## $locations[[1]]
+## [1] 1 3
+## 
+## $locations[[2]]
+## [1] 1 4
+## 
+## 
+## $cigar
+## [1] "3=1I"
+## 
+## $cigarFormat
+## [1] "extended"
+```
 
-```{r}
+
+
+```r
 ## the previous example with additionalEqualities 
 algn4 = align("ACTG", "CACTRT", mode="HW", task="path", additionalEqualities=list(c("R", "A"), c("R", "G")))
 print(algn4)
+```
+
+```
+## $editDistance
+## [1] 0
+## 
+## $alphabetLength
+## [1] 5
+## 
+## $locations
+## $locations[[1]]
+## [1] 1 4
+## 
+## 
+## $cigar
+## [1] "4="
+## 
+## $cigarFormat
+## [1] "extended"
 ```
 
 
@@ -111,7 +190,8 @@ Note: Users must use the argument `task="path"` within `align()` to output a CIG
 
 ### Examples:
 
-```{r}
+
+```r
 library(edlibR)
 
 query = "elephant"
@@ -119,6 +199,17 @@ target = "telephone"
 result = align(query, target, task = "path")
 nice_algn = getNiceAlignment(result, query, target)
 print(nice_algn)
+```
+
+```
+## $query_aligned
+## [1] "-elephant"
+## 
+## $matched_aligned
+## [1] "-|||||.|."
+## 
+## $target_aligned
+## [1] "telephone"
 ```
 
 ## getNiceAlignment() function arguments 
@@ -132,7 +223,8 @@ print(nice_algn)
 
 The function `nice_print()` simply prints the output of `getNiceAlignment()` to the console for quickly inspecting the alignment. Users can think of this function as a "pretty-print" function for visualization. 
 
-```{r}
+
+```r
 library(edlibR)
 ## example above from getNiceAlignment()
 
@@ -141,6 +233,12 @@ target = "telephone"
 result = align(query, target, task = "path")
 nice_algn = getNiceAlignment(result, query, target)
 nice_print(nice_algn)
+```
+
+```
+## [1] "query:   -elephant"
+## [1] "matched: -|||||.|."
+## [1] "target:  telephone"
 ```
 
 

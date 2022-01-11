@@ -364,7 +364,7 @@ pre code {
 <table>
 <tbody>
 <tr class="odd">
-<td>itle: “EdlibR”</td>
+<td>itle: “EdlibR: R interface to edlib”</td>
 </tr>
 <tr class="even">
 <td>utput:</td>
@@ -386,21 +386,29 @@ pre code {
 </tr>
 </tbody>
 </table>
+<p>-[align()][#align] <em>[align function arguments][#align-function-arguments] -[getNiceAlignment()][#getnicealignment] </em>[getNiceAlignment() function arguments][#getnicealignment-function-arguments] -[nice_print()][#nice_print]</p>
 <p>Edlib is a C/C++ library to compute the exact pairwise sequence alignment using the <a href="https://en.wikipedia.org/wiki/Edit_distance">edit distance</a> (<a href="https://en.wikipedia.org/wiki/Levenshtein_distance">Levenshtein distance</a>). This R package <code>edlibR</code> is modeled after the API of the <a href="https://pypi.org/project/edlib/">Python package edlib on PyPI</a>.</p>
+<p>There are three functions within edlibR:</p>
+<p><strong>align()</strong></p>
+<pre><code>align(query, target, [mode], [task], [k], [cigarFormat], [additionalEqualities])</code></pre>
+<p><strong>getNiceAlignment()</strong></p>
+<pre><code>getNiceAlignment(alignResult, query, target, [gapSymbol])</code></pre>
+<p><strong>nice_print()</strong></p>
+<pre><code>nice_print(niceAlignment)</code></pre>
 <div id="align" class="section level1">
 <h1>align()</h1>
-<p>The first function provided by edlibR is <code>align()</code>. The function <code>align()</code> computes the pairwise alignment of the input <code>query</code> against the input <code>target</code>:</p>
+<p>The first function provided by <code>edlibR</code> is <code>align()</code>. The function <code>align()</code> computes the pairwise alignment of the input <code>query</code> against the input <code>target</code>:</p>
 <pre><code>align(query, target, [mode], [task], [k], [cigarFormat], [additionalEqualities])</code></pre>
 <p>A list is returned with the following fields:</p>
 <ul>
-<li><strong>editDistance:</strong> The edit distance. (Note: the editDistance will be set to -1 if it is larger than the parameter ‘k’.)</li>
-<li><strong>alphabetLength:</strong> The length of unique characters in ‘query’ and ‘target’.</li>
-<li><strong>locations:</strong> A list of R vectors of locations, in the format list(c(start, end)). Note: if the start or end positions are NULL, this is encoded as ‘NA’ to work correctly with R vectors.</li>
+<li><strong>editDistance:</strong> The edit distance ( which is set to -1 if it is larger than the parameter ‘k’.)</li>
+<li><strong>alphabetLength:</strong> The length of unique characters in <code>query</code> and <code>target</code>.</li>
+<li><strong>locations:</strong> A list of R vectors of locations, in the format <code>list(c(start, end))</code>. Note: if the start or end positions are NULL, this is encoded as <code>NA</code> to work correctly with R vectors.</li>
 <li><strong>cigar:</strong> CIGAR is a standard format for the alignment path.</li>
-<li><strong>cigarFormat:</strong> This is simply the format provided by the parameter ‘cigarFormat’ in the function align() which is returned here for the function getNiceAlignment(). (Note: the function getNiceAlignment() only accepts <code>cigarFormat=&quot;extended&quot;</code>.)</li>
+<li><strong>cigarFormat:</strong> This is simply the format provided by the parameter <code>cigarFormat</code> in the function <code>align()</code> which is returned here for the function <code>getNiceAlignment()</code>. (Note: the function <code>getNiceAlignment()</code> only accepts <code>cigarFormat=&quot;extended&quot;</code>.)</li>
 </ul>
-<div id="examples" class="section level4">
-<h4>Examples:</h4>
+<div id="examples" class="section level3">
+<h3>Examples:</h3>
 <pre class="r"><code>library(edlibR)
 
 algn1 = align(&quot;ACTG&quot;, &quot;CACTRT&quot;, mode=&quot;HW&quot;, task=&quot;path&quot;)
@@ -483,18 +491,16 @@ print(algn4)</code></pre>
 ## $cigarFormat
 ## [1] &quot;extended&quot;</code></pre>
 </div>
-<div id="arguments" class="section level2">
-<h2>Arguments</h2>
-<div id="align-function-arguments" class="section level4">
-<h4>align() function arguments</h4>
+<div id="align-function-arguments" class="section level2">
+<h2>align() function arguments</h2>
 <ul>
 <li><strong>query:</strong> This string is the query in the pairwise alignment</li>
 <li><strong>target:</strong> This string is the target in the pairwise alignment</li>
-<li><strong>mode:</strong> This parameter denotes the alignment method to be used. Note that there are three alignment methods supported by edlibR:
+<li><strong>mode:</strong> This parameter denotes the alignment method to be used. Note that there are three alignment methods supported by <code>edlibR</code>:
 <ul>
 <li><strong>global (NW)</strong> - This is the standard method, when we say “edit distance” this is the method that is assumed. (Note that ‘NW’ stands for ‘Needleman-Wunsch’.) It tells us the smallest number of operations needed to transform the first sequence into the second sequence. <em>This method is appropriate when you want to find out how similar the first sequence is to the second sequence.</em></li>
-<li><strong>prefix (SHW)</strong> - Similar to the global method, but with a small twist - gap at query end is not penalized. What this means is that deleting elements from the end of the second sequence is “free”! (Note that ‘HW’ stands for ‘Hybrid Wunsch’.) For example, if we had <code>AACT</code> and <code>AACTGGC</code>, edit distance would be 0, because removing <code>GGC</code> from the end of the second sequence is “free” and does not count into total edit distance. <em>This method is appropriate when you want to find out how well the first sequence fits at the beginning of the second sequence.</em></li>
-<li><strong>infix (HW)</strong>: Similar as prefix method, but with one more twist - gaps at query end <strong>and start</strong> are not penalized. What this means is that deleting elements from both the start and the end of the second sequence is “free”! (Note that ‘SHW’ stands for ‘Semi-Hybrid Wunsch’.) For example, if we had <code>ACT</code> and <code>CGACTGAC</code>, edit distance would be 0, because removing <code>CG</code> from the start and <code>GAC</code> from the end of the second sequence is “free” and does not count into total edit distance. <em>This method is appropriate when you want to find out how well the first sequence fits at any part of the second sequence.</em> For example, if your second sequence was a long text and your first sequence was a sentence from that text, but slightly scrambled, you could use this method to discover how scrambled it is and where it fits in that text. <em>In bioinformatics, this method is appropriate for aligning a read to a sequence.</em></li>
+<li><strong>prefix (SHW)</strong> - Similar to the global method, but with a small twist - gap at query end is not penalized. What this means is that deleting elements from the end of the second sequence is “free”! (Note that ‘HW’ stands for ‘Hybrid Wunsch’.) For example, if we had query as <code>AACT</code> and target as <code>AACTGGC</code>, the edit distance would be 0, because removing <code>GGC</code> from the end of the second sequence is “free” and does not count into the total edit distance. <em>This method is appropriate when you want to find out how well the first sequence fits at the beginning of the second sequence.</em></li>
+<li><strong>infix (HW)</strong>: Similar as prefix method, but with one more twist - gaps at query end <strong>and start</strong> are not penalized. What this means is that deleting elements from both the start and the end of the second sequence is “free”! (Note that ‘SHW’ stands for ‘Semi-Hybrid Wunsch’.) For example, if we had <code>ACT</code> and <code>CGACTGAC</code>, the edit distance would be 0, because removing <code>CG</code> from the start and <code>GAC</code> from the end of the second sequence is “free” and does not count into the total edit distance. <em>This method is appropriate when you want to find out how well the first sequence fits at any part of the second sequence.</em> For example, if your second sequence was a long text and your first sequence was a sentence from that text, but slightly scrambled, you could use this method to discover how scrambled it is and where it fits in that text. <em>In bioinformatics, this method is appropriate for aligning a read to a sequence.</em></li>
 </ul></li>
 <li><strong>task:</strong> This parameter specifies what to calculate. There are three possible values, ranked from fastest to slowest:
 <ul>
@@ -502,8 +508,8 @@ print(algn4)</code></pre>
 <li><strong>locations:</strong> Find the edit distance, the end locations, and the start locations.</li>
 <li><strong>path:</strong> Find the edit distance, the start and end locations, and the alignment path.</li>
 </ul></li>
-<li><strong>k:</strong> This parameter sets the maximum edit distance to search for: the lower this value, the faster the calculation. By default, k=-1 to have no limit on edit distance.</li>
-<li><strong>cigarFormat:</strong> This parameter pecifies which format to use for writing out the CIGAR string. The two possible values are ‘standard’ and ‘extended’ (Note: the function getNiceAlignment() only accepts ‘extended’):
+<li><strong>k:</strong> This parameter sets the maximum edit distance to search for: the lower this value, the faster the calculation. By default, k=-1 denotes no limit on the edit distance.</li>
+<li><strong>cigarFormat:</strong> This parameter pecifies which format to use for writing out the CIGAR string. The two possible values are ‘standard’ and ‘extended’ (Note: the function getNiceAlignment() only accepts <code>cigarFormat=&quot;extended&quot;</code>):
 <ul>
 <li><strong>standard</strong>: Standard uses the following symbols to generate a CIGAR string: Match: ‘M’, Insertion: ‘I’, Deletion: ‘D’, Mismatch: ‘M’. Note that ‘M’ in this setting can denote either a sequence match or mismatch.</li>
 <li><strong>extended</strong>: Extended uses the following symbols to generate a CIGAR string: Match: ‘=’, Insertion to target: ‘I’, Deletion from target: ‘D’, Mismatch: ‘X’. e.g. CIGAR of “5=1X1=1I” means “5 matches, 1 mismatch, 1 match, 1 insertion (to target)”.</li>
@@ -512,14 +518,13 @@ print(algn4)</code></pre>
 </ul>
 </div>
 </div>
-</div>
 <div id="getnicealignment" class="section level1">
 <h1>getNiceAlignment()</h1>
 <p>The function getNiceAlignment() takes the output of align(), and represents this in a visually informative format for human inspection (“NICE format”). This will be an informative string showing the matches, mismatches, insertions, and deletions.</p>
 <pre><code>getNiceAlignment(alignResult, query, target, [gapSymbol])</code></pre>
-<p>Note: Users must use the argument <code>task=&quot;path&quot;</code> within align() to output a CIGAR for getNiceAlignment(); otherwise, there will be no CIGAR for getNiceAlignment() to re-construct the alignment in NICE format. Also, users must use the argument <code>cigarFormat=&quot;extended&quot;</code> within align(); otherwise, the CIGAR will be too ambiguous for getNiceAlignment() to correctly re-construct the alignment() in NICE format.</p>
-<div id="examples-1" class="section level4">
-<h4>Examples:</h4>
+<p>Note: Users must use the argument <code>task=&quot;path&quot;</code> within <code>align()</code> to output a CIGAR for <code>getNiceAlignment()</code>; otherwise, there will be no CIGAR for <code>getNiceAlignment()</code> to reconstruct the alignment in “NICE” format. Also, users must use the argument <code>cigarFormat=&quot;extended&quot;</code> within align(); otherwise, the CIGAR will be too ambiguous for getNiceAlignment() to correctly reconstruct the alignment() in “NICE” format.</p>
+<div id="examples-1" class="section level3">
+<h3>Examples:</h3>
 <pre class="r"><code>library(edlibR)
 
 query = &quot;elephant&quot;
@@ -536,22 +541,19 @@ print(nice_algn)</code></pre>
 ## $target_aligned
 ## [1] &quot;telephone&quot;</code></pre>
 </div>
-<div id="arguments-1" class="section level2">
-<h2>Arguments</h2>
-<div id="getnicealignment-function-arguments" class="section level4">
-<h4>getNiceAlignment() function arguments</h4>
+<div id="getnicealignment-function-arguments" class="section level2">
+<h2>getNiceAlignment() function arguments</h2>
 <ul>
-<li><strong>alignResult:</strong> The output of the method align(). As mentioned above, align() must use the arguments <code>task=&quot;path&quot;</code> and <code>cigarFormat=&quot;extended&quot;</code> in order for the CIGAR to be informative enough for getNiceAlignment() to work properly.</li>
-<li><strong>query:</strong> The exact query used for alignResult</li>
-<li><strong>target:</strong> The exact target used for alignResult</li>
-<li><strong>gapSymbol:</strong> This parameter sets the character used to represent gaps in the alignment between query and target (default=“-”). This must be a single character, i.e. a string of length 1 (i.e. <code>nchar(gapSymbol)</code> must equal 1).</li>
+<li><strong>alignResult:</strong> The output of the method <code>align()</code>. As mentioned above, <code>align()</code> must use the arguments <code>task=&quot;path&quot;</code> and <code>cigarFormat=&quot;extended&quot;</code> in order for the CIGAR to be informative enough for <code>getNiceAlignment()</code> to work properly.</li>
+<li><strong>query:</strong> The exact query used for <code>alignResult</code></li>
+<li><strong>target:</strong> The exact target used for <code>alignResult</code></li>
+<li><strong>gapSymbol:</strong> This parameter sets the character used to represent gaps in the alignment between <code>query</code> and <code>target</code> (default=<code>&quot;-&quot;</code>). This must be a single character, i.e. a string of length 1 (i.e. <code>nchar(gapSymbol)</code> must equal 1).</li>
 </ul>
-</div>
 </div>
 </div>
 <div id="nice_print" class="section level1">
 <h1>nice_print()</h1>
-<p>The function nice_print() simply prints the output of getNiceAlignment() to the console for quickly inspecting the alignment. Users can think of this function as a “pretty-print” function for visualizing the alignment.</p>
+<p>The function <code>nice_print()</code> simply prints the output of <code>getNiceAlignment()</code> to the console for quickly inspecting the alignment. Users can think of this function as a “pretty-print” function for visualization.</p>
 <pre class="r"><code>library(edlibR)
 ## example above from getNiceAlignment()
 
