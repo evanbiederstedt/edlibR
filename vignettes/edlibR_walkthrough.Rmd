@@ -1,0 +1,150 @@
+ ---
+title: "EdlibR: R interface to edlib"
+output: 
+  rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{EdlibR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+-[align()][#align]
+  *[align function arguments][#align-function-arguments]
+-[getNiceAlignment()][#getnicealignment]
+  *[getNiceAlignment() function arguments][#getnicealignment-function-arguments]
+-[nice_print()][#nice_print]
+
+Edlib is a C/C++ library to compute the exact pairwise sequence alignment using the [edit distance](https://en.wikipedia.org/wiki/Edit_distance) ([Levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance)). This R package `edlibR` is modeled after the API of the [Python package edlib on PyPI](https://pypi.org/project/edlib/). 
+
+There are three functions within edlibR:
+
+**align()**
+
+```
+align(query, target, [mode], [task], [k], [cigarFormat], [additionalEqualities])
+```
+
+**getNiceAlignment()**
+
+```
+getNiceAlignment(alignResult, query, target, [gapSymbol])
+```
+
+**nice_print()**
+
+```
+nice_print(niceAlignment)
+```
+
+# align()
+
+The first function provided by `edlibR` is `align()`. The function `align()` computes the pairwise alignment of the input `query` against the input `target`:
+
+```
+align(query, target, [mode], [task], [k], [cigarFormat], [additionalEqualities])
+```
+
+A list is returned with the following fields:
+
+* **editDistance:** The edit distance ( which is set to -1 if it is larger than the parameter 'k'.)
+* **alphabetLength:** The length of unique characters in `query` and `target`.
+* **locations:** A list of R vectors of locations, in the format `list(c(start, end))`. Note: if the start or end positions are NULL, this is encoded as `NA` to work correctly with R vectors.
+* **cigar:** CIGAR is a standard format for the alignment path.
+* **cigarFormat:** This is simply the format provided by the parameter `cigarFormat` in the function `align()` which is returned here for the function `getNiceAlignment()`. (Note: the function `getNiceAlignment()` only accepts `cigarFormat="extended"`.)
+
+### Examples:
+
+```{r}
+library(edlibR)
+
+algn1 = align("ACTG", "CACTRT", mode="HW", task="path")
+print(algn1)
+```
+
+```{r}
+algn2 = align("elephant", "telephone")
+print(algn2)
+```
+
+```{r}
+algn3 = align("ACTG", "CACTRT", mode="HW", task="path")
+print(algn3)
+```
+
+
+```{r}
+## the previous example with additionalEqualities 
+algn4 = align("ACTG", "CACTRT", mode="HW", task="path", additionalEqualities=list(c("R", "A"), c("R", "G")))
+print(algn4)
+```
+
+
+## align() function arguments 
+
+* **query:** This string is the query in the pairwise alignment
+* **target:** This string is the target in the pairwise alignment
+* **mode:** This parameter denotes the alignment method to be used. Note that there are three alignment methods supported by `edlibR`:
+    * **global (NW)** - This is the standard method, when we say "edit distance" this is the method that is assumed. (Note that 'NW' stands for 'Needleman-Wunsch'.) It tells us the smallest number of operations needed to transform the first sequence into the second sequence. *This method is appropriate when you want to find out how similar the first sequence is to the second sequence.*
+    * **prefix (SHW)** - Similar to the global method, but with a small twist - gap at query end is not penalized. What this means is that deleting elements from the end of the second sequence is "free"! (Note that 'HW' stands for 'Hybrid Wunsch'.) For example, if we had query as `AACT` and target as `AACTGGC`, the edit distance would be 0, because removing `GGC` from the end of the second sequence is "free" and does not count into the total edit distance. *This method is appropriate when you want to find out how well the first sequence fits at the beginning of the second sequence.*
+    * **infix (HW)**: Similar as prefix method, but with one more twist - gaps at query end **and start** are not penalized. What this means is that deleting elements from both the start and the end of the second sequence is "free"! (Note that 'SHW' stands for 'Semi-Hybrid Wunsch'.) For example, if we had `ACT` and `CGACTGAC`, the edit distance would be 0, because removing `CG` from the start and `GAC` from the end of the second sequence is "free" and does not count into the total edit distance. *This method is appropriate when you want to find out how well the first sequence fits at any part of the second sequence.* For example, if your second sequence was a long text and your first sequence was a sentence from that text, but slightly scrambled, you could use this method to discover how scrambled it is and where it fits in that text.
+    *In bioinformatics, this method is appropriate for aligning a read to a sequence.*
+* **task:** This parameter specifies what to calculate. There are three possible values, ranked from fastest to slowest:
+    * **distance:** Find the edit distance and the end locations in the target (default).
+    * **locations:** Find the edit distance, the end locations, and the start locations.
+    * **path:** Find the edit distance, the start and end locations, and the alignment path.
+* **k:** This parameter sets the maximum edit distance to search for: the lower this value, the faster the calculation. By default, k=-1 denotes no limit on the edit distance.
+* **cigarFormat:** This parameter pecifies which format to use for writing out the CIGAR string. The two possible values are 'standard' and 'extended' (Note: the function getNiceAlignment() only accepts `cigarFormat="extended"`):
+    * **standard**: Standard uses the following symbols to generate a CIGAR string:  Match: 'M', Insertion: 'I', Deletion: 'D', Mismatch: 'M'. Note that 'M' in this setting can denote either a sequence match or mismatch.
+    * **extended**: Extended uses the following symbols to generate a CIGAR string: Match: '=', Insertion to target: 'I', Deletion from target: 'D', Mismatch: 'X'. e.g. CIGAR of "5=1X1=1I" means "5 matches, 1 mismatch, 1 match, 1 insertion (to target)".
+* **additionalEqualities:** This parameter allows users to extend the definition of equality used in the alignment. The input 'additionalEqualities' must be a list of character vectors whereby each character vector contains a pair of character strings. (NOTE: the character vectors must contain exactly two strings, a pair.) Each pair defines two values as equal. This can be useful e.g. when you want edlib to be case insensitive, or if you want certain characters to act as wildcards. If NULL, there will be no additional extensions to edlib's default equality definition.
+
+
+# getNiceAlignment()
+
+The function getNiceAlignment() takes the output of align(), and represents this in a visually informative format for human inspection ("NICE format"). This will be an informative string showing the matches, mismatches, insertions, and deletions.
+
+```
+getNiceAlignment(alignResult, query, target, [gapSymbol])
+```
+
+Note: Users must use the argument `task="path"` within `align()` to output a CIGAR for `getNiceAlignment()`; otherwise, there will be no CIGAR for `getNiceAlignment()` to reconstruct the alignment in "NICE" format. Also, users must use the argument `cigarFormat="extended"` within align(); otherwise, the CIGAR will be too ambiguous for getNiceAlignment() to correctly reconstruct the alignment() in "NICE" format.
+
+### Examples:
+
+```{r}
+library(edlibR)
+
+query = "elephant"
+target = "telephone"
+result = align(query, target, task = "path")
+nice_algn = getNiceAlignment(result, query, target)
+print(nice_algn)
+```
+
+## getNiceAlignment() function arguments 
+
+* **alignResult:** The output of the method `align()`. As mentioned above, `align()` must use the arguments `task="path"` and `cigarFormat="extended"` in order for the CIGAR to be informative enough for `getNiceAlignment()` to work properly.
+* **query:** The exact query used for `alignResult`
+* **target:** The exact target used for `alignResult`
+* **gapSymbol:** This parameter sets the character used to represent gaps in the alignment between `query` and `target` (default=`"-"`). This must be a single character, i.e. a string of length 1 (i.e. `nchar(gapSymbol)` must equal 1).
+
+# nice_print()
+
+The function `nice_print()` simply prints the output of `getNiceAlignment()` to the console for quickly inspecting the alignment. Users can think of this function as a "pretty-print" function for visualization. 
+
+```{r}
+library(edlibR)
+## example above from getNiceAlignment()
+
+query = "elephant"
+target = "telephone"
+result = align(query, target, task = "path")
+nice_algn = getNiceAlignment(result, query, target)
+nice_print(nice_algn)
+```
+
+
+For more information regarding edlib, please see the [publication in Bioinformatics](https://academic.oup.com/bioinformatics/article/33/9/1394/2964763).
+
+
+
