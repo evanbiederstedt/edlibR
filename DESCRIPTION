@@ -2,7 +2,7 @@ Package: edlibR
 Title: R Wrapper to Edlib, the C/C++ Library for Fast Exact Sequence Alignment using Edit (Levenshtein) Distance
 Version: 1.0.0
 Authors@R: c(person("Martin", "Šošić", email = "sosic.martin@gmail.com", role = c("aut")), person("Evan", "Biederstedt", email="evan.biederstedt@gmail.com", role=c("aut", "cre")))
-Description: The 'edlibr' R provides provides an R API to the C/C++ library edlib, which is a lightweight, super fast library for sequence alignment using edit (Levenshtein) distance. The original algorithm is described in "Edlib: a C/C++ library for fast, exact sequence alignment using edit distance", M. Šošić, M. Šikić, <https://doi.org/10.1093/bioinformatics/btw753>.
+Description: The 'edlibr' R provides provides an R API to the C/C++ library edlib, which is a lightweight, super fast library for sequence alignment using edit (Levenshtein) distance. The original algorithm is described in "Edlib: a C/C++ library for fast, exact sequence alignment using edit distance", M. Šošić, M. Šikić, <doi:10.1093/bioinformatics/btw753>.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Depends: R (>= 3.5.0)

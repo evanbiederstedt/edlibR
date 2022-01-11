@@ -1,15 +1,6 @@
----
-title: "EdlibR: R interface to edlib"
-output: 
-  rmarkdown::html_vignette:
-vignette: >
-  %\VignetteIndexEntry{"EdlibR: R interface to edlib"}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
----
+# EdlibR: R interface to edlib
 
-
- This R package `edlibR` provides bindings to the C/C++ library edlib, which computes the exact pairwise sequence alignment using the [edit distance](https://en.wikipedia.org/wiki/Edit_distance) ([Levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance)). The functions within `edlibR` are modeled after the API of the [Python package edlib on PyPI](https://pypi.org/project/edlib/)
+This R package `edlibR` provides bindings to the C/C++ library edlib, which computes the exact pairwise sequence alignment using the [edit distance](https://en.wikipedia.org/wiki/Edit_distance) ([Levenshtein distance](https://en.wikipedia.org/wiki/Levenshtein_distance)). The functions within `edlibR` are modeled after the API of the [Python package edlib on PyPI](https://pypi.org/project/edlib/)
 
 There are three functions within `edlibR`:
 
