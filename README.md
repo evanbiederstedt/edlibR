@@ -1,5 +1,8 @@
 [![<evanbiederstedt>](https://circleci.com/gh/evanbiederstedt/edlibR.svg?style=svg)](https://app.circleci.com/pipelines/github/evanbiederstedt/edlibR)
+[![CRAN status](https://www.r-pkg.org/badges/version/edlibR)](https://cran.r-project.org/package=edlibR)
+[![CRAN downloads](https://cranlogs.r-pkg.org/badges/edlibR)](https://cran.r-project.org/package=edlibR)
 
+ 
 # edlibR
 
 - [Introduction](#edlibr-r-integration-for-edlib)
@@ -82,6 +85,14 @@ More details can be found within the edlib publication[[4]](#4).
 
 
 ## Installation
+ 
+ 
+To install the stable version from [CRAN](https://cran.r-project.org/package=edlibR), use:
+
+```r
+install.packages('edlibR')
+```
+
 
 To install the latest version, use:
 
