@@ -167,7 +167,7 @@ getNiceAlignment <- function(alignResult, query, target, gapSymbol="-") {
 	}
 
 	gapsymbol_check <- function(input) {
-		return(is.character(input) & length(input)==1 & nchar(input))
+		return(is.character(input) && length(input)==1 && nchar(input))
 	}
 
 	if (!gapsymbol_check(gapSymbol)) {
@@ -182,70 +182,70 @@ getNiceAlignment <- function(alignResult, query, target, gapSymbol="-") {
 		## R is 1-based, so this must be 1, not 0
 		target_pos = 1
 	}
-    query_pos = 1
-    target_aln = match_aln = query_aln = ""
+	query_pos = 1
+	target_aln = match_aln = query_aln = ""
 
 	cigar_parsing = stringr::str_extract_all(alignResult$cigar, "(\\d+)(\\D)")
 
-    ## cigar parsing, motivated by yech1990: https://github.com/Martinsos/edlib/issues/127
-    ## 'num_occurrences' == Number of occurrences of the alignment operation
-    ## 'alignment_operation' == Cigar symbol/code that represent an alignment operation
+	## cigar parsing, motivated by yech1990: https://github.com/Martinsos/edlib/issues/127
+	## 'num_occurrences' == Number of occurrences of the alignment operation
+	## 'alignment_operation' == Cigar symbol/code that represent an alignment operation
 
 	## check that the strings in the resulting character vector have
 	## the format "number of  occurrences" + "alignment_operation"
 
 	for (i in 1:length(cigar_parsing[[1]])) {
-        num_occurrences = as.numeric(gsub("([0-9]+).*$", "\\1", cigar_parsing[[1]][i]))
-        if (is.na(num_occurrences)) {
-        	stop("The CIGAR string is in an invalid format. Cannot find number of occurrences for the operation. 
-        		The expected format should be 'number of occurrences' + 'CIGAR operation', e.g. '4=' or '1D5=1X1=1X'. Please fix.")
-        }
-        alignment_operation = sub("[[:digit:]]", "", cigar_parsing[[1]][i])
-        if (nchar(alignment_operation)>1) {
-        	stop("The CIGAR string is in an invalid format. Operation detected is not a single character '=' or 'X' or 'D'. 
-        		The expected format should be 'number of occurrences' + 'CIGAR operation', e.g. '4=' or '1D5=1X1=1X'. Please fix.")       	
-        }
+		num_occurrences = as.numeric(gsub("([0-9]+).*$", "\\1", cigar_parsing[[1]][i]))
+		if (is.na(num_occurrences)) {
+			stop("The CIGAR string is in an invalid format. Cannot find number of occurrences for the operation. 
+				The expected format should be 'number of occurrences' + 'CIGAR operation', e.g. '4=' or '1D5=1X1=1X'. Please fix.")
+		}
+		alignment_operation = sub("[[:digit:]]", "", cigar_parsing[[1]][i])
+		if (nchar(alignment_operation)>1) {
+			stop("The CIGAR string is in an invalid format. Operation detected is not a single character '=' or 'X' or 'D'. 
+				The expected format should be 'number of occurrences' + 'CIGAR operation', e.g. '4=' or '1D5=1X1=1X'. Please fix.")       	
+		}
 
-        if (alignment_operation == "=") {
-            target_aln_addition = substr(target, target_pos, target_pos + num_occurrences - 1)
-            target_aln = paste0(target_aln, target_aln_addition)
-            target_pos = target_pos + num_occurrences
-            query_aln_addition = substr(query, query_pos, query_pos + num_occurrences - 1)
-            query_aln = paste0(query_aln, query_aln_addition)
+		if (alignment_operation == "=") {
+			target_aln_addition = substr(target, target_pos, target_pos + num_occurrences - 1)
+			target_aln = paste0(target_aln, target_aln_addition)
+			target_pos = target_pos + num_occurrences
+			query_aln_addition = substr(query, query_pos, query_pos + num_occurrences - 1)
+			query_aln = paste0(query_aln, query_aln_addition)
 			query_pos = query_pos + num_occurrences
 			match_aln_addition = paste(rep("|", num_occurrences), collapse="")
 			match_aln = paste0(match_aln, match_aln_addition)
-        } else if (alignment_operation == "X") {
-            target_aln_addition = substr(target, target_pos, target_pos + num_occurrences - 1)
-            target_aln = paste0(target_aln, target_aln_addition)
-            target_pos = target_pos + num_occurrences
-            query_aln_addition = substr(query, query_pos, query_pos + num_occurrences - 1)
-            query_aln = paste0(query_aln, query_aln_addition)
+		} else if (alignment_operation == "X") {
+			target_aln_addition = substr(target, target_pos, target_pos + num_occurrences - 1)
+			target_aln = paste0(target_aln, target_aln_addition)
+			target_pos = target_pos + num_occurrences
+			query_aln_addition = substr(query, query_pos, query_pos + num_occurrences - 1)
+			query_aln = paste0(query_aln, query_aln_addition)
 			query_pos = query_pos + num_occurrences
 			match_aln_addition = paste(rep(".", num_occurrences), collapse="")
 			match_aln = paste0(match_aln, match_aln_addition)
-        } else if (alignment_operation == "D") {
-            target_aln_addition = substr(target, target_pos, target_pos + num_occurrences - 1)
-            target_aln = paste0(target_aln, target_aln_addition)
-            target_pos = target_pos + num_occurrences   
-            query_aln_addition = paste(rep(gapSymbol, num_occurrences), collapse="")               	
-            query_aln = paste0(query_aln, query_aln_addition)
-            ## query_pos = query_pos + 0
+		} else if (alignment_operation == "D") {
+			target_aln_addition = substr(target, target_pos, target_pos + num_occurrences - 1)
+			target_aln = paste0(target_aln, target_aln_addition)
+			target_pos = target_pos + num_occurrences   
+			query_aln_addition = paste(rep(gapSymbol, num_occurrences), collapse="")               	
+			query_aln = paste0(query_aln, query_aln_addition)
+			## query_pos = query_pos + 0
 			match_aln_addition = paste(rep(gapSymbol, num_occurrences), collapse="")
 			match_aln = paste0(match_aln, match_aln_addition)        	
-        } else if (alignment_operation == "I") {
-            target_aln_addition = paste(rep(gapSymbol, num_occurrences), collapse="") 
-            target_aln = paste0(target_aln, target_aln_addition)	
-            ## target_pos = target_pos + 0
-            query_aln_addition = substr(query, query_pos, query_pos + num_occurrences - 1)
-            query_aln = paste0(query_aln, query_aln_addition)
+		} else if (alignment_operation == "I") {
+			target_aln_addition = paste(rep(gapSymbol, num_occurrences), collapse="") 
+			target_aln = paste0(target_aln, target_aln_addition)	
+			## target_pos = target_pos + 0
+			query_aln_addition = substr(query, query_pos, query_pos + num_occurrences - 1)
+			query_aln = paste0(query_aln, query_aln_addition)
 			query_pos = query_pos + num_occurrences
 			match_aln_addition = paste(rep(gapSymbol, num_occurrences), collapse="")
 			match_aln = paste0(match_aln, match_aln_addition)  
-        } else {
-        	stop("An error occurred due to an incorrect CIGAR format. The CIGAR string contains invalid characters, i.e. characters 
+		} else {
+			stop("An error occurred due to an incorrect CIGAR format. The CIGAR string contains invalid characters, i.e. characters 
 			      besides 'X', 'I', 'D', '=' or numerals besides 1-9. Please fix.")
-        }       
+		}       
 	}
 	
 	return(list('query_aligned'=query_aln, 'matched_aligned'=match_aln, 'target_aligned'=target_aln))
@@ -254,7 +254,7 @@ getNiceAlignment <- function(alignResult, query, target, gapSymbol="-") {
 
 #' @keywords internal
 string_check <- function(input) {
-	return(is.character(input) & length(input)==1)
+	return(is.character(input) && length(input)==1)
 }
 
 
