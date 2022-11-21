@@ -111,7 +111,7 @@ The R package can be cited as follows:
 ```
 Martin Šošić and Evan Biederstedt (2022). edlibR: R wrapper to edlib,
 the C/C++ library for fast exact sequence alignment using edit
-(Levenshtein) distance. R package version 1.0.0.
+(Levenshtein) distance. R package version 1.0.1.
 https://github.com/evanbiederstedt/edlibR
 ```
 
