@@ -1,3 +1,2 @@
 PKG_CXXFLAGS=-I"./include"
-PKG_LIBS=-L"." -lpthread -lm `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"` $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
-CXX_STD = CXX11
+PKG_LIBS=-lpthread `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"` $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
