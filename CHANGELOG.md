@@ -2,6 +2,7 @@
 
 - Removed '-L/usr/lib/' in Makevars
 - Also removed other non-necessary libraries and CXX11 specification
+- Removed 'SystemRequirements: C++11'
 
 
 ## [1.0.1] - 2022-Nov-21
