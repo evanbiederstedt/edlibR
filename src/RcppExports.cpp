@@ -15,7 +15,6 @@ Rcpp::List edlibalign(std::string query, std::string target, std::string input_m
 RcppExport SEXP _edlibR_edlibalign(SEXP querySEXP, SEXP targetSEXP, SEXP input_modeSEXP, SEXP input_taskSEXP, SEXP kSEXP, SEXP cigar_formatSEXP, SEXP input_additionalEqualitiesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< std::string >::type query(querySEXP);
     Rcpp::traits::input_parameter< std::string >::type target(targetSEXP);
     Rcpp::traits::input_parameter< std::string >::type input_mode(input_modeSEXP);
@@ -33,7 +32,9 @@ static const R_CallMethodDef CallEntries[] = {
     {NULL, NULL, 0}
 };
 
+void edlib_export_functions(DllInfo* dll);
 RcppExport void R_init_edlibR(DllInfo *dll) {
     R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
+    edlib_export_functions(dll);
 }

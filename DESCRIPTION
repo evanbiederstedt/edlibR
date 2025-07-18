@@ -1,7 +1,10 @@
 Package: edlibR
 Title: R Integration for Edlib, the C/C++ Library for Exact Pairwise Sequence Alignment using Edit (Levenshtein) Distance
-Version: 1.0.2
-Authors@R: c(person("Martin", "Šošić", email = "sosic.martin@gmail.com", role = c("aut")), person("Evan", "Biederstedt", email="evan.biederstedt@gmail.com", role=c("aut", "cre")))
+Version: 1.0.3
+Authors@R: c(
+    person("Martin", "Šošić", email = "sosic.martin@gmail.com", role = c("aut")),
+    person("Evan", "Biederstedt", email="evan.biederstedt@gmail.com", role=c("aut", "cre")),
+    person("Travers", "Ching", email="traversc@gmail.com", role=c("ctb")))
 Description: Bindings to edlib, a lightweight performant C/C++ library for exact pairwise sequence alignment using edit distance (Levenshtein distance). The algorithm computes the optimal alignment path, but also can be used to find only the start and/or end of the alignment path for convenience. Edlib was designed to be ultrafast and require little memory, with the capability to handle very large sequences. Three alignment methods are supported: global (Needleman-Wunsch), infix (Hybrid Wunsch), and prefix (Semi-Hybrid Wunsch). The original C/C++ library is described in "Edlib: a C/C++ library for fast, exact sequence alignment using edit distance", M. Šošić, M. Šikić, <doi:10.1093/bioinformatics/btw753>.
 License: MIT + file LICENSE
 Encoding: UTF-8
